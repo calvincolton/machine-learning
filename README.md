@@ -20,6 +20,13 @@ To download this project using git, run the following command at your terminal:
 git clone https://github.com/StephenGrider/MLKits.git
 ```
 
+## Fundamental Operations of Machine Learning (and keys to learning ML):
+### Features vs Labels
+### Feature Normalization/Standardization
+### Feature Selection
+### Test vs Training Sets
+### Common Data Structures (arrays of arrays)
+
 ## Two common types of algorithms:
 
 ### Classification
@@ -37,3 +44,39 @@ The value of our labels belong to a continuous set.
 Examples:
 1) Based on the year, make, and model of a car, what is its value? --> $0 - $50k
 2) Based on an individual's daily caloric intake and minutes spent exercising, what is their weight? --> 80 - 400lb
+
+Note: Any time we are working with a dollar amount, it is very likely going to be regression.
+
+## TensorFlow Key Terminology
+
+### Tensor
+A JavaScript object that wraps a collection of numbers (e.g. [200, 450, 16, .5]). These numbers will be in some type of structure of arrays.
+
+### Dimension
+Dimensions essentially like dimensions around arrays normally work in JavaScript.
+
+### Shape
+The term "shape" represents how many records are in each dimension, i.e. the equivalent of calling .length on each level in a tensor, working from outside to in (see below)
+ex 1:
+[3, 4, 6].length
+Shape = [3]
+
+ex 2:
+[
+  [5, 10, 17],
+  [2, 8, 23].length
+].length
+Shape = [2,3]
+
+ex 3:
+[
+  [
+    [5, 10, 17].length
+  ].length
+].length
+Shape = [1, 1, 3]
+
+Note: with 2 dimensional tensors, Shape always represents [# of rows, # of columns]
+
+### Broadcasting ("Smearing")
+Performing tensorflow operations on elements that have different shapes (from right to left). Note: shapes must have a value greater than or equal to one.
