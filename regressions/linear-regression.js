@@ -42,10 +42,4 @@ class LinearRegression {
 
 }
 
-// LinearRegression instantiation example:
-// new LinearRegression(features, labels, {
-//   iterations: 99,
-//   learningRate: 0.01
-// });
-
 module.exports = LinearRegression;
