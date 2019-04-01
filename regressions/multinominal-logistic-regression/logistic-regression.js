@@ -24,7 +24,7 @@ class LogisticRegression {
       .matMul(differences)
       .div(features.shape[0]);
 
-    this.weights = this.weights.sub(slopes.mul(this.options.learningRate));
+    return this.weights.sub(slopes.mul(this.options.learningRate));
   }
 
   predict(observations) {
@@ -43,15 +43,19 @@ class LogisticRegression {
       for (let j = 0; j < batchQuantity; j++) {
         const { batchSize } = this.options;
         const startIndex = j * batchSize;
-        const featuresSlice = this.features.slice(
-          [startIndex, 0],
-          [batchSize, -1]
-        );
-        const labelsSlice = this.labels.slice(
-          [startIndex, 0],
-          [batchSize, -1]
-        );
-        this.gradientDescent(featuresSlice, labelsSlice);
+
+        this.weights = tf.tidy(() => {
+          const featuresSlice = this.features.slice(
+            [startIndex, 0],
+            [batchSize, -1]
+          );
+          const labelsSlice = this.labels.slice(
+            [startIndex, 0],
+            [batchSize, -1]
+          );
+
+          return this.gradientDescent(featuresSlice, labelsSlice);
+        });
       }
 
       this.recordCost();
@@ -87,10 +91,13 @@ class LogisticRegression {
 
   standardize(features) {
     const { mean, variance } = tf.moments(features, 0);
-    this.mean = mean;
-    this.variance = variance;
 
-    return features.sub(mean).div(variance.pow(0.5));
+    const filler = variance.cast('bool').logicalNot().cast('float32');
+
+    this.mean = mean;
+    this.variance = variance.add(filler);
+
+    return features.sub(mean).div(this.variance.pow(0.5));
   }
 
   recordCost() {
