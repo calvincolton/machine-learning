@@ -29,7 +29,7 @@ regression.train();
 console.log(regression.test(testFeatures, testLabels));
 
 plot({
-  x: regression.crossEntropyHistory.reverse()
+  x: regression.costHistory.reverse()
 });
 
 // regression.predict([
