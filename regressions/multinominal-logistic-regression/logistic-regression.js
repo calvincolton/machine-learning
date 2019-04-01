@@ -5,7 +5,7 @@ class LogisticRegression {
   constructor(features, labels, options) {
     this.features = this.processFeatures(features);
     this.labels = tf.tensor(labels);
-    this.crossEntropyHistory = [];
+    this.costHistory = [];
 
     this.options = Object.assign(
       { learningRate: 0.1, iterations: 1000, decisionBoundary: 0.5 },
@@ -103,7 +103,7 @@ class LogisticRegression {
   recordCost() {
     const cost = tf.tidy(() => {
       const guesses = this.features.matMul(this.weights).sigmoid();
-      const termOne = this.labels.transpose().matMul(guesses.log())
+      const termOne = this.labels.transpose().matMul(guesses.add(1e-7).log())
       const termTwo = this.labels
         .mul(-1)
         .add(1)
@@ -112,6 +112,7 @@ class LogisticRegression {
           guesses
             .mul(-1)
             .add(1)
+            .add(1e-7)  // add 1 x 10 ^ -7 to avoid log(0)
             .log()
         );
 
@@ -121,15 +122,15 @@ class LogisticRegression {
         .get(0, 0);
     });
 
-    this.crossEntropyHistory.unshift(cost);
+    this.costHistory.unshift(cost);
   }
 
   updateLearningRate() {
-    if (this.crossEntropyHistory.length < 2) {
+    if (this.costHistory.length < 2) {
       return;
     }
 
-    if (this.crossEntropyHistory[0] > this.crossEntropyHistory[1]) {
+    if (this.costHistory[0] > this.costHistory[1]) {
       this.options.learningRate /= 2;
     } else {
       this.options.learningRate *= 1.05;
